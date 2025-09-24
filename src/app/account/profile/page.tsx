@@ -2,7 +2,8 @@ import { redirect } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { User, Mail, Phone, Calendar, Bell, Shield, Crown, Star, Gift, Award, Target, Heart, Settings, Trash2, Cake, Activity, Headphones, Waves, Mountain } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { User, Mail, Phone, Calendar, Bell, Shield, Crown, Star, Gift, Award, Target, Heart, Settings, Trash2, Cake, Activity, Headphones, Waves, Mountain, MapPin, Plus, Edit, Home, Building, Copy, CreditCard, Lock, Eye, CheckCircle } from 'lucide-react'
 
 export default async function ProfilePage() {
   // 临时跳过登录验证，用于测试
@@ -20,11 +21,11 @@ export default async function ProfilePage() {
 
   // 模拟客户数据用于测试
   const customer = {
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john@example.com',
+    firstName: 'Sophia',
+    lastName: 'Zhao',
+    email: 'sophia@example.com',
     phone: '+1 (555) 123-4567',
-    displayName: 'John Doe',
+    displayName: 'Sophia Zhao',
     acceptsMarketing: true,
     createdAt: '2023-01-01T00:00:00Z',
     birthday: '1990-06-15',
@@ -48,113 +49,163 @@ export default async function ProfilePage() {
       musicGenres: ['Rock', 'Electronic', 'Podcasts'],
       notificationFrequency: 'Weekly',
       // Shokz特有的运动场景偏好
-      primaryUseCase: 'running',
-      secondaryUseCases: ['cycling', 'swimming'],
+      primaryUseCase: 'outdoor-running',
+      secondaryUseCases: ['cycling', 'gym-training'],
       workoutFrequency: 'daily',
       environment: 'outdoor'
     }
   }
 
+  // 模拟地址数据
+  const addresses = [
+    {
+      id: '1',
+      firstName: 'Sophia',
+      lastName: 'Zhao',
+      company: '',
+      address1: '123 Main St',
+      address2: 'Apt 4B',
+      city: 'San Francisco',
+      province: 'CA',
+      country: 'United States',
+      zip: '94102',
+      phone: '+1 (555) 123-4567',
+      isDefaultBilling: true,
+      isDefaultShipping: true,
+      type: 'home',
+      lastUsed: '2024-01-15T10:30:00Z'
+    },
+    {
+      id: '2',
+      firstName: 'Sophia',
+      lastName: 'Zhao',
+      company: 'Shokz Inc',
+      address1: '456 Business Ave',
+      address2: 'Suite 200',
+      city: 'San Francisco',
+      province: 'CA',
+      country: 'United States',
+      zip: '94105',
+      phone: '+1 (555) 987-6543',
+      isDefaultBilling: false,
+      isDefaultShipping: false,
+      type: 'work',
+      lastUsed: '2024-01-10T14:15:00Z'
+    },
+    {
+      id: '3',
+      firstName: 'Jane',
+      lastName: 'Smith',
+      company: '',
+      address1: '789 Oak Street',
+      address2: '',
+      city: 'Oakland',
+      province: 'CA',
+      country: 'United States',
+      zip: '94601',
+      phone: '+1 (555) 456-7890',
+      isDefaultBilling: false,
+      isDefaultShipping: false,
+      type: 'gift',
+      lastUsed: '2023-12-20T16:45:00Z'
+    }
+  ]
+
+  // 模拟支付方式数据 - 基于实际Shopify支付方式
+  const paymentMethods = [
+    {
+      id: '1',
+      type: 'shopify_payments',
+      last4: '4242',
+      brand: 'Visa',
+      expiryMonth: '12',
+      expiryYear: '2026',
+      isDefault: true,
+      holderName: 'Sophia Zhao',
+      provider: 'Shopify Payments'
+    },
+    {
+      id: '2',
+      type: 'paypal',
+      email: 'sophia@example.com',
+      isDefault: false,
+      provider: 'PayPal'
+    },
+    {
+      id: '3',
+      type: 'shop_pay',
+      last4: '4242',
+      brand: 'Visa',
+      expiryMonth: '12',
+      expiryYear: '2026',
+      isDefault: false,
+      holderName: 'Sophia Zhao',
+      provider: 'Shop Pay'
+    }
+  ]
+
+  const defaultAddress = addresses.find(addr => addr.isDefaultBilling || addr.isDefaultShipping)
+  const defaultPayment = paymentMethods.find(pm => pm.isDefault)
+
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-6xl mx-auto">
+      {/* 页面标题 - Shopify风格 */}
       <div className="mb-8">
-        <h1 className="text-3xl font-light text-gray-900 mb-2">
-          Profile Settings
+        <h1 className="text-2xl font-medium text-gray-900 mb-2">
+          Account Settings
         </h1>
-        <p className="text-base text-gray-600 font-light">
-          Manage your personal information and preferences
+        <p className="text-gray-600">
+          Manage your personal information, addresses, and payment methods
         </p>
       </div>
 
-      {/* Quick Access to Rewards - Simplified */}
-      <div className="mb-6 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl border border-orange-100 p-4">
+      {/* 主要内容区域 - 两列布局，参考Shopify最佳实践 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        {/* 左列 - 个人信息和地址 */}
+        <div className="space-y-6">
+          
+          {/* 个人信息卡片 - 参考Allbirds的简洁设计 */}
+          <div className="bg-white border border-gray-200 rounded-lg">
+            <div className="px-6 py-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-orange-100 rounded-lg">
-              <Crown className="h-5 w-5 text-orange-600" />
-            </div>
-            <div>
-              <h2 className="text-lg font-medium text-gray-900">
-                {customer.loyaltyTier} Member
-              </h2>
-              <p className="text-sm text-gray-600">
-                {customer.loyaltyPoints} points • <a href="/account/rewards" className="text-orange-600 hover:text-orange-700">View Rewards</a>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-8">
-        {/* Personal Information */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-light text-gray-900 flex items-center gap-3">
-              <div className="p-2 bg-gray-100 rounded-lg">
-                <User className="h-5 w-5 text-gray-600" />
+                <h2 className="text-lg font-medium text-gray-900">Personal Information</h2>
+                <Button variant="outline" size="sm" className="text-sm">
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit
+                </Button>
               </div>
-              Personal Information
-            </h2>
-            <p className="text-sm text-gray-500 mt-2">
-              Update your personal details and contact information
-            </p>
           </div>
-                  <div className="p-6 space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="px-6 py-6">
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                          First Name
-                        </label>
-                        <input
-                          id="firstName"
-                          type="text"
-                          defaultValue={customer.firstName || ''}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-                        />
+                    <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                    <div className="text-sm text-gray-900">{customer.firstName}</div>
                       </div>
                       <div>
-                        <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                          Last Name
-                        </label>
-                        <input
-                          id="lastName"
-                          type="text"
-                          defaultValue={customer.lastName || ''}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-                        />
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                    <div className="text-sm text-gray-900">{customer.lastName}</div>
                       </div>
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                        Email Address
-                      </label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <input
-                          id="email"
-                          type="email"
-                          defaultValue={customer.email}
-                          className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
-                          disabled
-                        />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-gray-900">{customer.email}</span>
                       </div>
                     </div>
 
                     <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                        Phone Number
-                      </label>
-                      <input
-                        id="phone"
-                        type="tel"
-                        defaultValue={customer.phone || ''}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-                        placeholder="Enter your phone number"
-                      />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                  <div className="flex items-center gap-2">
+                    <Phone className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-gray-900">{customer.phone}</span>
+                  </div>
                     </div>
 
-                    <div className="flex items-center space-x-2">
+                <div className="flex items-center gap-2 pt-2">
                       <input
                         type="checkbox"
                         id="acceptsMarketing"
@@ -165,140 +216,349 @@ export default async function ProfilePage() {
                         I want to receive marketing emails and updates
                       </label>
                     </div>
-
-                    <button className="px-6 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
-                      Save Changes
-                    </button>
+              </div>
                   </div>
         </div>
 
-        {/* Account Information - Simplified */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-light text-gray-900 flex items-center gap-3">
-              <div className="p-2 bg-gray-100 rounded-lg">
-                <Shield className="h-5 w-5 text-gray-600" />
+          {/* 地址管理卡片 - 参考Boll & Branch的清晰布局 */}
+          <div className="bg-white border border-gray-200 rounded-lg">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-medium text-gray-900">Addresses</h2>
+                <Button variant="outline" size="sm" className="text-sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Address
+                </Button>
               </div>
-              Account Information
-            </h2>
+            </div>
+            <div className="px-6 py-6">
+              {addresses.length > 0 ? (
+                <div className="space-y-4">
+                  {/* 默认地址 */}
+                  {defaultAddress && (
+                    <div className="border border-gray-200 rounded-lg p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <Home className="h-4 w-4 text-gray-600" />
+                          <span className="text-sm font-medium text-gray-900">Default Address</span>
+                        </div>
+                        <Badge variant="secondary" className="text-xs">Default</Badge>
+                      </div>
+                      
+                      <div className="text-sm text-gray-600 space-y-1">
+                        <p className="font-medium text-gray-900">
+                          {defaultAddress.firstName} {defaultAddress.lastName}
+                        </p>
+                        <p>{defaultAddress.address1}</p>
+                        {defaultAddress.address2 && <p>{defaultAddress.address2}</p>}
+                        <p>{defaultAddress.city}, {defaultAddress.province} {defaultAddress.zip}</p>
+                        <p>{defaultAddress.country}</p>
+                      </div>
+                      
+                      <div className="flex gap-2 mt-3">
+                        <Button variant="outline" size="sm" className="text-xs">
+                          <Edit className="h-3 w-3 mr-1" />
+                          Edit
+                        </Button>
+                        <Button variant="outline" size="sm" className="text-xs">
+                          <Copy className="h-3 w-3 mr-1" />
+                          Copy
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 其他地址 */}
+                  {addresses.filter(addr => !addr.isDefaultBilling && !addr.isDefaultShipping).length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-900 mb-3">Other Addresses</h3>
+                      <div className="space-y-3">
+                        {addresses.filter(addr => !addr.isDefaultBilling && !addr.isDefaultShipping).map((address) => (
+                          <div key={address.id} className="border border-gray-200 rounded-lg p-4">
+                            <div className="flex items-start justify-between mb-2">
+                              <div className="flex items-center gap-2">
+                                {address.type === 'work' ? (
+                                  <Building className="h-4 w-4 text-gray-600" />
+                                ) : (
+                                  <MapPin className="h-4 w-4 text-gray-600" />
+                                )}
+                                <span className="text-sm font-medium text-gray-900 capitalize">
+                                  {address.type}
+                                </span>
+                              </div>
+                              <div className="flex gap-1">
+                                <Button variant="outline" size="sm" className="h-6 w-6 p-0">
+                                  <Edit className="h-3 w-3" />
+                                </Button>
+                                <Button variant="outline" size="sm" className="h-6 w-6 p-0">
+                                  <Copy className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            </div>
+                            
+                            <div className="text-sm text-gray-600 space-y-1">
+                              <p className="font-medium text-gray-900">
+                                {address.firstName} {address.lastName}
+                              </p>
+                              <p>{address.address1}</p>
+                              {address.address2 && <p>{address.address2}</p>}
+                              <p>{address.city}, {address.province} {address.zip}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <MapPin className="h-8 w-8 text-gray-400 mx-auto mb-3" />
+                  <h3 className="text-sm font-medium text-gray-900 mb-2">No addresses saved</h3>
+                  <p className="text-sm text-gray-600 mb-4">Add your first address to make checkout faster.</p>
+                  <Button className="text-sm">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Address
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="p-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <p className="text-lg font-semibold text-gray-900">
-                  {new Date(customer.createdAt).getFullYear()}
-                </p>
-                <p className="text-sm text-gray-500">Member Since</p>
+        </div>
+
+        {/* 右列 - 支付方式和安全设置 */}
+        <div className="space-y-6">
+          
+          {/* 支付方式卡片 - 参考Shopify原生设计 */}
+          <div className="bg-white border border-gray-200 rounded-lg">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-lg font-medium text-gray-900">Payment Methods</h2>
+                  <p className="text-sm text-gray-600 mt-1">Secure payment options for faster checkout</p>
+                </div>
+                <Button variant="outline" size="sm" className="text-sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Payment
+                </Button>
               </div>
-              <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <p className="text-lg font-semibold text-gray-900">
-                  {customer.age}
-                </p>
-                <p className="text-sm text-gray-500">Years Old</p>
+            </div>
+            <div className="px-6 py-6">
+              {paymentMethods.length > 0 ? (
+                <div className="space-y-4">
+                  {/* 默认支付方式 */}
+                  {defaultPayment && (
+                    <div className="border border-gray-200 rounded-lg p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          {defaultPayment.type === 'shopify_payments' ? (
+                            <div className="w-10 h-6 bg-gradient-to-r from-green-600 to-green-700 rounded flex items-center justify-center">
+                              <span className="text-white font-bold text-xs">S</span>
+                            </div>
+                          ) : defaultPayment.type === 'paypal' ? (
+                            <div className="w-10 h-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
+                              <span className="text-white font-bold text-xs">PP</span>
+                            </div>
+                          ) : (
+                            <div className="w-10 h-6 bg-gradient-to-r from-purple-600 to-purple-700 rounded flex items-center justify-center">
+                              <span className="text-white font-bold text-xs">SP</span>
+                            </div>
+                          )}
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              {defaultPayment.type === 'paypal' ? 'PayPal' : `${defaultPayment.brand} •••• ${defaultPayment.last4}`}
+                            </p>
+                            <p className="text-xs text-gray-600">
+                              {defaultPayment.type === 'paypal' ? defaultPayment.email : `Expires ${defaultPayment.expiryMonth}/${defaultPayment.expiryYear}`}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {defaultPayment.provider}
+                            </p>
+                          </div>
+                        </div>
+                        <Badge variant="secondary" className="text-xs">Default</Badge>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" className="text-xs">
+                          <Edit className="h-3 w-3 mr-1" />
+                          Edit
+                        </Button>
+                        <Button variant="outline" size="sm" className="text-xs text-red-600 hover:text-red-700">
+                          Remove
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 其他支付方式 */}
+                  {paymentMethods.filter(pm => !pm.isDefault).length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-900 mb-3">Other Payment Methods</h3>
+                      <div className="space-y-3">
+                        {paymentMethods.filter(pm => !pm.isDefault).map((payment) => (
+                          <div key={payment.id} className="border border-gray-200 rounded-lg p-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                {payment.type === 'shopify_payments' ? (
+                                  <div className="w-10 h-6 bg-gradient-to-r from-green-600 to-green-700 rounded flex items-center justify-center">
+                                    <span className="text-white font-bold text-xs">S</span>
+                                  </div>
+                                ) : payment.type === 'paypal' ? (
+                                  <div className="w-10 h-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
+                                    <span className="text-white font-bold text-xs">PP</span>
+                                  </div>
+                                ) : (
+                                  <div className="w-10 h-6 bg-gradient-to-r from-purple-600 to-purple-700 rounded flex items-center justify-center">
+                                    <span className="text-white font-bold text-xs">SP</span>
               </div>
-              <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <p className="text-lg font-semibold text-gray-900">
-                  ${customer.totalSpent.toFixed(0)}
-                </p>
-                <p className="text-sm text-gray-500">Total Spent</p>
+                                )}
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900">
+                                    {payment.type === 'paypal' ? 'PayPal' : `${payment.brand} •••• ${payment.last4}`}
+                                  </p>
+                                  <p className="text-xs text-gray-600">
+                                    {payment.type === 'paypal' ? payment.email : `Expires ${payment.expiryMonth}/${payment.expiryYear}`}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    {payment.provider}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex gap-1">
+                                <Button variant="outline" size="sm" className="h-6 w-6 p-0">
+                                  <Edit className="h-3 w-3" />
+                                </Button>
+                                <Button variant="outline" size="sm" className="h-6 w-6 p-0 text-red-600 hover:text-red-700">
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* 支付方式说明 */}
+                  <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                    <h4 className="text-sm font-medium text-gray-900 mb-3">Available Payment Methods</h4>
+                    <div className="space-y-2 text-xs text-gray-600">
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-3 bg-gradient-to-r from-green-600 to-green-700 rounded flex items-center justify-center">
+                          <span className="text-white font-bold text-xs">S</span>
+                        </div>
+                        <span><strong>Shopify Payments:</strong> Secure credit/debit card processing</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center">
+                          <span className="text-white font-bold text-xs">PP</span>
+                        </div>
+                        <span><strong>PayPal:</strong> Pay with your PayPal account or credit card</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-3 bg-gradient-to-r from-purple-600 to-purple-700 rounded flex items-center justify-center">
+                          <span className="text-white font-bold text-xs">SP</span>
+                        </div>
+                        <span><strong>Shop Pay:</strong> One-click checkout with saved information</span>
+                      </div>
+                    </div>
+                  </div>
               </div>
-              <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <p className="text-lg font-semibold text-gray-900">
-                  {customer.loyaltyLevel}
-                </p>
-                <p className="text-sm text-gray-500">Level</p>
+              ) : (
+                <div className="text-center py-8">
+                  <CreditCard className="h-8 w-8 text-gray-400 mx-auto mb-3" />
+                  <h3 className="text-sm font-medium text-gray-900 mb-2">No payment methods</h3>
+                  <p className="text-sm text-gray-600 mb-4">Add a payment method for faster checkout.</p>
+                  <Button className="text-sm">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Payment Method
+                  </Button>
+                </div>
+              )}
               </div>
             </div>
             
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <h4 className="font-medium text-gray-900 mb-3">Security & Privacy</h4>
-              <div className="space-y-3">
-                {/* Password Management */}
+          {/* 安全设置卡片 - 参考Shopify的安全设计 */}
+          <div className="bg-white border border-gray-200 rounded-lg">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-medium text-gray-900">Security</h2>
+            </div>
+            <div className="px-6 py-6">
+              <div className="space-y-4">
+                {/* 密码安全 */}
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-900">Password Security</p>
-                    <p className="text-sm text-gray-500">Last changed 3 months ago</p>
-                  </div>
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <span>Strong</span>
+                    <Lock className="h-5 w-5 text-gray-600" />
+                  <div>
+                      <p className="text-sm font-medium text-gray-900">Password</p>
+                      <p className="text-xs text-gray-600">Last changed 3 months ago</p>
                     </div>
-                    <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <span className="text-xs text-green-600">Strong</span>
+                    </div>
+                    <Button variant="outline" size="sm" className="text-xs">
                       Change
-                    </button>
+                    </Button>
                   </div>
                 </div>
                 
-                {/* Two-Factor Authentication */}
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-900">Two-Factor Authentication</p>
-                    <p className="text-sm text-gray-500">Add an extra layer of security</p>
-                  </div>
+                {/* 2FA设置 */}
+                <div className="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Shield className="h-5 w-5 text-blue-600" />
+                  <div>
+                      <p className="text-sm font-medium text-gray-900">Two-Factor Authentication</p>
+                      <p className="text-xs text-gray-600">Required for data compliance</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
                       <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                      <span>Not enabled</span>
+                      <span className="text-xs text-yellow-600">Not enabled</span>
                     </div>
-                    <button className="px-4 py-2 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800 transition-colors">
-                      Enable 2FA
-                    </button>
+                    <Button size="sm" className="text-xs bg-blue-600 hover:bg-blue-700">
+                      Enable
+                    </Button>
                   </div>
                 </div>
 
-                {/* Login Activity */}
+                {/* 登录活动 */}
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-900">Login Activity</p>
-                    <p className="text-sm text-gray-500">Last login: Today at 2:30 PM</p>
-                  </div>
-                  <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                    View History
-                  </button>
-                </div>
-
-                {/* Data Privacy */}
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-900">Data & Privacy</p>
-                    <p className="text-sm text-gray-500">Manage your personal data</p>
-                  </div>
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      <span>GDPR compliant</span>
+                    <Eye className="h-5 w-5 text-gray-600" />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">Login Activity</p>
+                      <p className="text-xs text-gray-600">Last login: Today at 2:30 PM</p>
                     </div>
-                    <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                      Settings
-                    </button>
                   </div>
-                </div>
+                  <Button variant="outline" size="sm" className="text-xs">
+                    View History
+                  </Button>
               </div>
             </div>
           </div>
         </div>
 
-
-        {/* Shokz Preferences - Compact */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-light text-gray-900 flex items-center gap-3">
-              <div className="p-2 bg-gray-100 rounded-lg">
-                <Activity className="h-5 w-5 text-gray-600" />
+          {/* 账户偏好卡片 */}
+          <div className="bg-white border border-gray-200 rounded-lg">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-medium text-gray-900">Preferences</h2>
               </div>
-              How do you use Shokz?
-            </h2>
-          </div>
-          <div className="p-6">
-            <div className="grid grid-cols-4 md:grid-cols-6 gap-3">
-              {[
-                { value: 'running', label: 'Running', icon: '🏃‍♂️' },
+            <div className="px-6 py-6">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">How do you use Shokz?</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { value: 'outdoor-running', label: 'Running', icon: '🏃‍♂️' },
                 { value: 'cycling', label: 'Cycling', icon: '🚴‍♂️' },
                 { value: 'swimming', label: 'Swimming', icon: '🏊‍♂️' },
-                { value: 'gym', label: 'Gym', icon: '💪' },
-                { value: 'commuting', label: 'Commuting', icon: '🚶‍♂️' },
-                { value: 'work', label: 'Work', icon: '💼' }
+                      { value: 'gym-training', label: 'Gym', icon: '💪' },
+                      { value: 'business-calls', label: 'Work', icon: '💼' },
+                      { value: 'daily-commute', label: 'Commute', icon: '🚶‍♂️' }
               ].map((option) => (
                 <label key={option.value} className="relative">
                   <input
@@ -313,48 +573,24 @@ export default async function ProfilePage() {
                       ? 'border-black bg-black text-white'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}>
-                    <div className="text-lg mb-1">{option.icon}</div>
+                          <div className="text-lg mb-2">{option.icon}</div>
                     <div className="text-xs font-medium">{option.label}</div>
                   </div>
                 </label>
               ))}
-            </div>
-            
-            <div className="mt-4 flex items-center justify-between">
-              <p className="text-xs text-gray-500">
-                Help us personalize your experience
-              </p>
-              <button className="px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
-                Save
-              </button>
-            </div>
           </div>
         </div>
 
-
-        {/* Notification Preferences - Compact */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-light text-gray-900 flex items-center gap-3">
-              <div className="p-2 bg-gray-100 rounded-lg">
-                <Bell className="h-5 w-5 text-gray-600" />
-              </div>
-              Notifications
-            </h2>
-          </div>
-          <div className="p-6">
+                <div className="pt-4 border-t border-gray-200">
             <div className="space-y-3">
               {[
-                { name: 'Order Updates', description: 'Order status changes', checked: true },
-                { name: 'Shipping', description: 'Package delivery updates', checked: true },
-                { name: 'Security', description: 'Account security alerts', checked: true },
-                { name: 'Promotions', description: 'Special offers and deals', checked: customer.acceptsMarketing }
+                      { name: 'Order Updates', checked: true },
+                      { name: 'Shipping Notifications', checked: true },
+                      { name: 'Security Alerts', checked: true },
+                      { name: 'Marketing Emails', checked: customer.acceptsMarketing }
               ].map((notification) => (
                 <div key={notification.name} className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">{notification.name}</p>
-                    <p className="text-sm text-gray-500">{notification.description}</p>
-                  </div>
+                        <span className="text-sm text-gray-900">{notification.name}</span>
                   <input
                     type="checkbox"
                     defaultChecked={notification.checked}
@@ -362,25 +598,13 @@ export default async function ProfilePage() {
                   />
                 </div>
               ))}
-            </div>
-            
-            <button className="mt-4 px-6 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
-              Save Preferences
-            </button>
           </div>
         </div>
 
-        {/* Danger Zone - Compact */}
-        <div className="bg-white rounded-xl shadow-sm border border-red-200">
-          <div className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-medium text-red-600">Delete Account</h2>
-                <p className="text-sm text-gray-500">Permanently delete your account and all data</p>
+                <Button className="w-full text-sm">
+                  Save Preferences
+                </Button>
               </div>
-              <button className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
-                Delete Account
-              </button>
             </div>
           </div>
         </div>

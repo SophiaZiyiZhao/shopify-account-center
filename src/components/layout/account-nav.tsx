@@ -15,58 +15,36 @@ import {
   Shield, 
   HelpCircle,
   Menu,
-  X
+  X,
+  LogOut
 } from 'lucide-react'
 
-// 参考其他官网的导航排序 - Profile提前到更显眼位置
+// 精简的导航项，减少拥挤感
 const navigationItems = [
-  {
-    name: 'Dashboard',
-    href: '/account',
-    icon: Home,
-    description: 'Account overview'
-  },
   {
     name: 'Profile',
     href: '/account/profile',
-    icon: User,
-    description: 'Personal information'
+    icon: User
   },
   {
     name: 'Orders',
     href: '/account/orders',
-    icon: Package,
-    description: 'Order history & details'
+    icon: Package
   },
   {
-    name: 'Track & Returns',
-    href: '/account/track',
-    icon: Truck,
-    description: 'Track shipments & returns'
-  },
-  {
-    name: 'Reward Hub',
-    href: '/account/rewards',
-    icon: Gift,
-    description: 'Points, rewards & offers'
-  },
-  {
-    name: 'Addresses',
-    href: '/account/addresses',
-    icon: MapPin,
-    description: 'Shipping & billing addresses'
-  },
-  {
-    name: 'Warranty & Registration',
+    name: 'Warranty',
     href: '/account/warranty',
-    icon: Shield,
-    description: 'Product registration & warranty'
+    icon: Shield
+  },
+  {
+    name: 'Rewards',
+    href: '/account/rewards',
+    icon: Gift
   },
   {
     name: 'Support',
     href: '/account/support',
-    icon: HelpCircle,
-    description: 'Help & contact us'
+    icon: HelpCircle
   }
 ]
 
@@ -76,152 +54,109 @@ export function AccountNav() {
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <div className="lg:hidden fixed top-4 left-4 z-50">
-        <button
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-2 rounded-md bg-white shadow-md border border-gray-200"
-        >
-          {isMobileMenuOpen ? (
-            <X className="h-6 w-6 text-gray-600" />
-          ) : (
-            <Menu className="h-6 w-6 text-gray-600" />
-          )}
-        </button>
-      </div>
-
-      {/* Mobile Navigation Overlay */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)} />
-      )}
-
-      {/* Mobile Navigation */}
-      <div className={`lg:hidden fixed top-0 left-0 z-40 w-80 h-full bg-white shadow-xl transform transition-transform duration-300 ${
-        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
-        <div className="p-6 pt-16">
-          <div className="mb-8">
-            <div className="flex items-center mb-4">
-              <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center mr-3">
-                <span className="text-white font-light text-lg">S</span>
-              </div>
-              <div>
-                <h2 className="text-lg font-medium text-gray-900">Shokz Account</h2>
-                <p className="text-sm text-gray-500">Welcome back</p>
-              </div>
-            </div>
-          </div>
-
-          <nav className="space-y-2">
-            {navigationItems.map((item) => {
-              const Icon = item.icon
-              const isActive = pathname === item.href
-              
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`flex items-center p-3 rounded-lg transition-colors ${
-                    isActive
-                      ? 'bg-black text-white'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  <Icon className="h-5 w-5 mr-3" />
-                  <div>
-                    <div className="font-medium">{item.name}</div>
-                    <div className={`text-xs ${isActive ? 'text-gray-300' : 'text-gray-500'}`}>
-                      {item.description}
-                    </div>
-                  </div>
-                </Link>
-              )
-            })}
-            
-            {/* Mobile Sign Out */}
-            <div className="pt-4 border-t border-gray-200">
-              <Link
-                href="/login"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
-              >
-                <div className="h-5 w-5 mr-3 flex items-center justify-center">
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
+      {/* Top Navigation Bar - Shopify Style with Shokz Branding */}
+      <nav className="bg-white border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Shokz Logo and Brand */}
+            <div className="flex items-center gap-3">
+              <Link href="/account" className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">S</span>
                 </div>
-                <div>
-                  <div className="font-medium">Sign Out</div>
-                  <div className="text-xs text-gray-500">End your session</div>
-                </div>
+                <span className="text-xl font-bold text-gray-900">Shokz Account</span>
               </Link>
             </div>
-          </nav>
-        </div>
-      </div>
 
-      {/* Desktop Navigation */}
-      <div className="hidden lg:flex lg:flex-col lg:w-80 lg:fixed lg:inset-y-0 lg:bg-white lg:border-r lg:border-gray-200">
-        <div className="flex-1 flex flex-col pt-6 pb-4 overflow-y-auto">
-          <div className="flex items-center flex-shrink-0 px-6 mb-8">
-            <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center mr-4">
-              <span className="text-white font-light text-xl">S</span>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-6">
+              {navigationItems.map((item) => {
+                const Icon = item.icon
+                const isActive = pathname === item.href
+                
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`flex items-center px-2 py-2 text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'text-black border-b-2 border-black'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4 mr-1.5" />
+                    {item.name}
+                  </Link>
+                )
+              })}
             </div>
-            <div>
-              <h1 className="text-xl font-light text-gray-900">Shokz Account</h1>
-              <p className="text-sm text-gray-500">Welcome back</p>
+
+            {/* User Menu and Mobile Button */}
+            <div className="flex items-center space-x-4">
+              {/* Sign Out Button */}
+              <Link
+                href="/login"
+                className="hidden md:flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Link>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              >
+                {isMobileMenuOpen ? (
+                  <X className="h-6 w-6" />
+                ) : (
+                  <Menu className="h-6 w-6" />
+                )}
+              </button>
             </div>
           </div>
+        </div>
 
-          <nav className="flex-1 px-4 space-y-1">
-            {navigationItems.map((item) => {
-              const Icon = item.icon
-              const isActive = pathname === item.href
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 bg-white">
+            <div className="px-4 py-2 space-y-1">
+              {navigationItems.map((item) => {
+                const Icon = item.icon
+                const isActive = pathname === item.href
+                
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                      isActive
+                        ? 'bg-gray-100 text-black'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4 mr-3" />
+                    {item.name}
+                  </Link>
+                )
+              })}
               
-              return (
+              {/* Mobile Sign Out */}
+              <div className="border-t border-gray-200 pt-2 mt-2">
                 <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors ${
-                    isActive
-                      ? 'bg-black text-white'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                  }`}
+                  href="/login"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
                 >
-                  <Icon className={`mr-3 h-5 w-5 ${
-                    isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-500'
-                  }`} />
-                  <div className="flex-1">
-                    <div>{item.name}</div>
-                    <div className={`text-xs mt-0.5 ${
-                      isActive ? 'text-gray-300' : 'text-gray-500'
-                    }`}>
-                      {item.description}
-                    </div>
-                  </div>
+                  <LogOut className="h-4 w-4 mr-3" />
+                  Sign Out
                 </Link>
-              )
-            })}
-          </nav>
-        </div>
-
-        {/* Desktop Footer */}
-        <div className="flex-shrink-0 p-4 border-t border-gray-200">
-          <div className="text-xs text-gray-500 text-center mb-4">
-            <p>© 2024 Shokz</p>
-            <p className="mt-1">Open Your World</p>
+              </div>
+            </div>
           </div>
-          <div className="text-center">
-            <Link 
-              href="/login"
-              className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              Sign Out
-            </Link>
-          </div>
-        </div>
-      </div>
+        )}
+      </nav>
     </>
   )
 }

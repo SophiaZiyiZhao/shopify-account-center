@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Crown, Star, Gift, Award, Target, Trophy, Zap, Calendar, Cake, TrendingUp, Sparkles, Percent, Clock, CheckCircle, Truck } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Shield, Package, Plus, Search, Filter, Calendar, AlertTriangle, CheckCircle, Clock, Gift, Award, Truck, MapPin, Edit, Eye, QrCode, Camera, Upload, ExternalLink, MessageCircle, Phone, Mail, HelpCircle, FileText, Download, Send, Star, Trophy, Target, Users, Zap, Heart, Share2, MessageSquare, Camera as CameraIcon, Video, Headphones, Music, Activity, MapPin as LocationIcon, TrendingUp, Crown, Sparkles, Flame, Medal, Flag } from 'lucide-react'
 
 export default async function RewardsPage() {
   // 临时跳过登录验证，用于测试
@@ -17,246 +19,475 @@ export default async function RewardsPage() {
   //   redirect('/login')
   // }
 
-  // 模拟客户数据用于测试 - 参考Shopify设计
-  const customer = {
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john@example.com',
-    birthday: '1990-06-15',
-    age: 34,
-    // Loyalty Program Data
-    loyaltyTier: 'Gold',
-    loyaltyPoints: 2450,
-    loyaltyLevel: 3,
-    totalSpent: 1299.00,
+  // 模拟客户奖励数据
+  const customerRewards = {
+    totalPoints: 2450,
+    tier: 'Gold',
     nextTierPoints: 550,
     nextTier: 'Platinum',
-    tierProgress: 82, // 82% to next tier
-    achievements: [
-      { id: 1, name: 'First Shokz', icon: '🎉', earned: true, description: 'Made your first Shokz purchase', points: 100 },
-      { id: 2, name: 'OpenRun Master', icon: '🏃‍♂️', earned: true, description: 'Purchased OpenRun series', points: 200 },
-      { id: 3, name: 'Audio Enthusiast', icon: '🎧', earned: true, description: 'Own multiple Shokz products', points: 300 },
-      { id: 4, name: 'Review Champion', icon: '⭐', earned: false, description: 'Write your first product review', points: 50 },
-      { id: 5, name: 'Birthday VIP', icon: '🎂', earned: false, description: 'Celebrate your birthday with us', points: 100 },
-      { id: 6, name: 'Platinum Audio Pro', icon: '👑', earned: false, description: 'Reach Platinum tier', points: 500 }
+    shokzStarStatus: 'Active',
+    shokzStarLevel: 'Elite',
+    streak: 7, // 连续活跃天数
+    monthlyGoal: 500,
+    monthlyProgress: 320
+  }
+
+  // 模拟奖励数据 - 参考Nike、Adidas、Apple等最佳案例
+  const rewards = {
+    featured: [
+      {
+        id: '1',
+        type: 'experience',
+        title: 'Boston Marathon VIP Experience',
+        description: 'Exclusive access to finish line area with premium viewing',
+        pointsRequired: 5000,
+        value: 200,
+        category: 'experience',
+        image: '/boston-marathon.jpg',
+        stock: 5,
+        date: '2024-04-15',
+        featured: true,
+        partner: 'Boston Marathon',
+        badge: 'Limited'
+      },
+      {
+        id: '2',
+        type: 'merchandise',
+        title: 'Shokz Performance Collection',
+        description: 'Complete workout gear set - T-shirt, cap, and water bottle',
+        pointsRequired: 2000,
+        value: 100,
+        category: 'merchandise',
+        image: '/shokz-collection.jpg',
+        stock: 25,
+        featured: true,
+        badge: 'Bundle'
+      }
     ],
-    recentActivity: [
-      { id: 1, name: 'OpenRun Pro Purchase', points: 50, date: '2024-01-20', type: 'earned', description: 'Order #1002 - OpenRun Pro' },
-      { id: 2, name: 'Product Review', points: 25, date: '2024-01-18', type: 'earned', description: 'Reviewed OpenSwim' },
-      { id: 3, name: 'Shokz Welcome Bonus', points: 100, date: '2023-01-01', type: 'earned', description: 'New Shokz member bonus' }
+    merchandise: [
+      {
+        id: '3',
+        type: 'merchandise',
+        title: 'Shokz Performance T-Shirt',
+        description: 'Premium moisture-wicking performance tee',
+        pointsRequired: 800,
+        value: 35,
+        category: 'merchandise',
+        image: '/shokz-tshirt.jpg',
+        stock: 45,
+        colors: ['Black', 'White', 'Orange']
+      },
+      {
+        id: '4',
+        type: 'merchandise',
+        title: 'Shokz Running Cap',
+        description: 'Lightweight running cap with Shokz branding',
+        pointsRequired: 600,
+        value: 25,
+        category: 'merchandise',
+        image: '/shokz-cap.jpg',
+        stock: 32,
+        colors: ['Black', 'Navy']
+      },
+      {
+        id: '5',
+        type: 'merchandise',
+        title: 'Shokz Insulated Water Bottle',
+        description: '24oz insulated bottle for your workouts',
+        pointsRequired: 1000,
+        value: 40,
+        category: 'merchandise',
+        image: '/shokz-bottle.jpg',
+        stock: 28,
+        colors: ['Black', 'Orange']
+      }
     ],
-    availableRewards: [
-      { id: 1, name: 'Shokz Accessory Bundle', points: 800, description: 'Free carrying case + cleaning kit', type: 'product', value: '$25' },
-      { id: 2, name: 'OpenRun Pro Discount', points: 1200, description: '20% off OpenRun Pro headphones', type: 'discount', value: '20%' },
-      { id: 3, name: 'Free Shipping', points: 200, description: 'Free shipping on your next order', type: 'shipping', value: 'Free' },
-      { id: 4, name: 'Exclusive Access', points: 1000, description: 'Early access to new Shokz products', type: 'access', value: 'VIP' }
+    experiences: [
+      {
+        id: '6',
+        type: 'experience',
+        title: 'Hyrox Competition Entry',
+        description: 'Free entry to local Hyrox fitness competition',
+        pointsRequired: 3000,
+        value: 150,
+        category: 'experience',
+        image: '/hyrox-competition.jpg',
+        stock: 10,
+        date: '2024-03-20',
+        partner: 'Hyrox'
+      },
+      {
+        id: '7',
+        type: 'experience',
+        title: 'Lifetime Fitness VIP Access',
+        description: 'VIP access to premium Lifetime Fitness locations',
+        pointsRequired: 2000,
+        value: 100,
+        category: 'experience',
+        image: '/lifetime-fitness.jpg',
+        stock: 15,
+        partner: 'Lifetime Fitness'
+      }
     ],
-    tierBenefits: [
-      { name: 'Priority Support', description: 'Get faster customer service', icon: '⚡' },
-      { name: 'Shokz Exclusive Offers', description: 'Special discounts on new products', icon: '🎁' },
-      { name: 'Early Access', description: 'Be the first to try new Shokz products', icon: '🚀' },
-      { name: 'Audio Community', description: 'Join exclusive Shokz user community', icon: '👥' }
+    discounts: [
+      {
+        id: '8',
+        type: 'discount',
+        title: '$25 Off Next Purchase',
+        description: 'Get $25 off your next Shokz purchase',
+        pointsRequired: 1200,
+        value: 25,
+        category: 'discount'
+      },
+      {
+        id: '9',
+        type: 'discount',
+        title: 'Free Express Shipping',
+        description: 'Free express shipping on your next order',
+        pointsRequired: 200,
+        value: 15,
+        category: 'shipping'
+      }
     ]
   }
 
+  // 模拟挑战数据
+  const challenges = [
+    {
+      id: '1',
+      title: 'Marathon Training',
+      description: 'Complete 10 long runs with your Shokz',
+      points: 500,
+      progress: 7,
+      total: 10,
+      icon: Activity,
+      category: 'fitness',
+      partner: 'Boston Marathon',
+      color: 'blue',
+      timeLeft: '15 days'
+    },
+    {
+      id: '2',
+      title: 'Hyrox Warrior',
+      description: 'Complete 5 Hyrox-style workouts',
+      points: 300,
+      progress: 2,
+      total: 5,
+      icon: Trophy,
+      category: 'fitness',
+      partner: 'Hyrox',
+      color: 'orange',
+      timeLeft: '8 days'
+    },
+    {
+      id: '3',
+      title: 'Shokz Star Ambassador',
+      description: 'Share 5 posts with #ShokzStar hashtag',
+      points: 400,
+      progress: 3,
+      total: 5,
+      icon: Star,
+      category: 'social',
+      partner: 'Shokz Star',
+      color: 'yellow',
+      timeLeft: '12 days'
+    }
+  ]
+
+  // 模拟Shokz Star内容
+  const shokzStarContent = [
+    {
+      id: '1',
+      type: 'photo',
+      user: 'Sarah M.',
+      content: 'Boston Marathon training with my OpenRun Pro! 🏃‍♀️ #ShokzStar #BostonMarathon',
+      likes: 24,
+      comments: 8,
+      points: 50,
+      image: '/shokz-star-1.jpg',
+      isShokzStar: true,
+      location: 'Boston, MA',
+      timeAgo: '2h'
+    },
+    {
+      id: '2',
+      type: 'video',
+      user: 'Mike T.',
+      content: 'Hyrox competition prep with OpenSwim - perfect for my training! #Hyrox #ShokzStar',
+      likes: 18,
+      comments: 5,
+      points: 75,
+      image: '/shokz-star-2.jpg',
+      isShokzStar: true,
+      location: 'Chicago, IL',
+      timeAgo: '4h'
+    }
+  ]
+
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Header */}
+      {/* 页面标题 */}
       <div className="mb-8">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="p-3 bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl shadow-lg">
-            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-            </svg>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-sm">S</span>
           </div>
-          <div>
-            <h1 className="text-3xl font-light text-gray-900 mb-1">
-              Shokz Reward Hub
+          <h1 className="text-3xl font-bold text-gray-900">
+            Shokz Rewards Hub
             </h1>
-            <p className="text-sm text-orange-600 font-medium">
-              Open Your World • Open Your Rewards
-            </p>
-          </div>
         </div>
-        <p className="text-base text-gray-600 font-light">
-          Earn points, unlock rewards, and enjoy exclusive benefits as a Shokz audio enthusiast
+        <p className="text-gray-600 text-lg">
+          Earn points, unlock exclusive rewards, and join the Shokz Star community
         </p>
       </div>
 
-      {/* Main Status Card - Shokz Style */}
-      <div className="mb-8 bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 rounded-2xl border border-orange-100 p-8 relative overflow-hidden">
-        {/* Shokz Brand Pattern */}
-        <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
-          <svg viewBox="0 0 100 100" className="w-full h-full text-orange-400">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="2"/>
-            <circle cx="50" cy="50" r="25" fill="none" stroke="currentColor" strokeWidth="1"/>
-            <circle cx="50" cy="50" r="10" fill="currentColor"/>
-          </svg>
+      {/* 英雄区域 - 参考Nike、Apple的设计 */}
+      <div className="relative bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 rounded-2xl p-8 mb-8 text-white overflow-hidden">
+        <div className="absolute inset-0 bg-black opacity-10"></div>
+        <div className="relative z-10">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                  <Crown className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold">Shokz Star Elite</h2>
+                  <p className="text-orange-100">Welcome back, Sophia!</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-6 mb-6">
+                <div>
+                  <div className="text-3xl font-bold">{customerRewards.totalPoints}</div>
+                  <div className="text-orange-100 text-sm">Total Points</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold">{customerRewards.streak}</div>
+                  <div className="text-orange-100 text-sm">Day Streak</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold">{customerRewards.tier}</div>
+                  <div className="text-orange-100 text-sm">Member Level</div>
+                </div>
+              </div>
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium">Monthly Goal Progress</span>
+                  <span className="text-sm">{customerRewards.monthlyProgress}/{customerRewards.monthlyGoal}</span>
+                </div>
+                <div className="w-full bg-white bg-opacity-20 rounded-full h-2">
+                  <div className="bg-white h-2 rounded-full" style={{width: `${(customerRewards.monthlyProgress/customerRewards.monthlyGoal)*100}%`}}></div>
         </div>
-        
-        <div className="flex items-center justify-between mb-6 relative z-10">
-          <div className="flex items-center gap-4">
-            <div className="p-4 bg-white rounded-2xl shadow-sm border border-orange-100">
-              <div className="flex items-center gap-2">
-                <Crown className="h-6 w-6 text-orange-600" />
-                <span className="text-xs font-bold text-orange-600 uppercase tracking-wide">Shokz</span>
               </div>
             </div>
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-900">
-                {customer.loyaltyTier} Audio Enthusiast
-              </h2>
-              <p className="text-lg text-gray-600">
-                {customer.loyaltyPoints.toLocaleString()} points earned
-              </p>
+            <div className="hidden lg:block">
+              <div className="w-32 h-32 bg-white bg-opacity-10 rounded-full flex items-center justify-center">
+                <Trophy className="h-16 w-16 text-white" />
+              </div>
             </div>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-gray-500">Next tier</p>
-            <p className="text-xl font-semibold text-gray-900">
-              {customer.nextTier}
-            </p>
-            <p className="text-sm text-gray-500">
-              {customer.nextTierPoints} points to go
-            </p>
-          </div>
-        </div>
-        
-        {/* Progress Bar */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between text-sm text-gray-600 mb-3">
-            <span>Progress to {customer.nextTier}</span>
-            <span className="font-medium">{customer.tierProgress}%</span>
-          </div>
-          <div className="w-full bg-white rounded-full h-4 shadow-inner">
-            <div 
-              className="bg-gradient-to-r from-orange-500 to-red-500 h-4 rounded-full transition-all duration-500 shadow-sm"
-              style={{ width: `${customer.tierProgress}%` }}
-            ></div>
-          </div>
-        </div>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-3 gap-6 pt-6 border-t border-orange-100">
-          <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900">{customer.loyaltyLevel}</p>
-            <p className="text-sm text-gray-600">Current Level</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900">${customer.totalSpent}</p>
-            <p className="text-sm text-gray-600">Total Spent</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl font-bold text-gray-900">
-              {new Date(customer.birthday).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-            </p>
-            <p className="text-sm text-gray-600">Birthday</p>
           </div>
         </div>
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Available Rewards - Featured */}
-        <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-              <div className="p-2 bg-indigo-100 rounded-lg">
-                <Gift className="h-5 w-5 text-indigo-600" />
-              </div>
-              Available Rewards
-            </h2>
-            <p className="text-sm text-gray-500 mt-2">
-              Redeem your points for exclusive rewards and benefits
-            </p>
+      {/* 主要内容区域 */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        {/* 左列 - 挑战和活动 */}
+        <div className="lg:col-span-1 space-y-6">
+          
+          {/* 活跃挑战 */}
+          <div className="bg-white border border-gray-200 rounded-xl p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Flame className="h-5 w-5 text-orange-500" />
+              <h3 className="font-semibold text-gray-900">Active Challenges</h3>
+            </div>
+            <div className="space-y-4">
+              {challenges.map((challenge) => (
+                <div key={challenge.id} className="border border-gray-100 rounded-lg p-4 hover:border-gray-200 transition-colors">
+                  <div className="flex items-start gap-3">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                      challenge.color === 'blue' ? 'bg-blue-100' :
+                      challenge.color === 'orange' ? 'bg-orange-100' :
+                      'bg-yellow-100'
+                    }`}>
+                      <challenge.icon className={`h-4 w-4 ${
+                        challenge.color === 'blue' ? 'text-blue-600' :
+                        challenge.color === 'orange' ? 'text-orange-600' :
+                        'text-yellow-600'
+                      }`} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="font-medium text-gray-900 text-sm">{challenge.title}</h4>
+                        <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
+                          {challenge.partner}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600 mb-2">{challenge.description}</p>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs text-gray-500">Progress</span>
+                        <span className="text-xs font-medium text-gray-900">{challenge.progress}/{challenge.total}</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
+                        <div className={`h-1.5 rounded-full ${
+                          challenge.color === 'blue' ? 'bg-blue-500' :
+                          challenge.color === 'orange' ? 'bg-orange-500' :
+                          'bg-yellow-500'
+                        }`} style={{width: `${(challenge.progress/challenge.total)*100}%`}}></div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-gray-500">{challenge.timeLeft} left</span>
+                        <span className="text-xs font-bold text-gray-900">+{challenge.points} pts</span>
+                      </div>
           </div>
-          <div className="p-6">
+          </div>
+        </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 快速操作 */}
+          <div className="bg-white border border-gray-200 rounded-xl p-6">
+            <h3 className="font-semibold text-gray-900 mb-4">Earn Points</h3>
+            <div className="space-y-3">
+              <button className="w-full flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <Star className="h-5 w-5 text-orange-500" />
+                <span className="font-medium text-gray-900 text-sm">Join Shokz Star</span>
+                <span className="ml-auto text-sm text-gray-600">+200</span>
+              </button>
+              <button className="w-full flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <Activity className="h-5 w-5 text-blue-500" />
+                <span className="font-medium text-gray-900 text-sm">Marathon Training</span>
+                <span className="ml-auto text-sm text-gray-600">+500</span>
+              </button>
+              <button className="w-full flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <Share2 className="h-5 w-5 text-purple-500" />
+                <span className="font-medium text-gray-900 text-sm">Share #ShokzStar</span>
+                <span className="ml-auto text-sm text-gray-600">+50</span>
+              </button>
+          </div>
+          </div>
+        </div>
+
+        {/* 中列 - 奖励展示 */}
+        <div className="lg:col-span-2 space-y-6">
+          
+          {/* 精选奖励 */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-900">Featured Rewards</h2>
+              <Button variant="outline" size="sm">
+                View All
+              </Button>
+          </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {customer.availableRewards.map((reward) => (
-                <div key={reward.id} className={`p-6 rounded-xl border-2 transition-all hover:shadow-md ${
-                  customer.loyaltyPoints >= reward.points
-                    ? 'border-indigo-200 bg-indigo-50 hover:border-indigo-300'
-                    : 'border-gray-200 bg-gray-50'
-                }`}>
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-lg ${
-                        reward.type === 'discount' ? 'bg-green-100' :
-                        reward.type === 'shipping' ? 'bg-blue-100' : 
-                        reward.type === 'product' ? 'bg-orange-100' : 'bg-purple-100'
-                      }`}>
-                        {reward.type === 'discount' ? <Percent className="h-4 w-4 text-green-600" /> :
-                         reward.type === 'shipping' ? <Truck className="h-4 w-4 text-blue-600" /> :
-                         reward.type === 'product' ? <Gift className="h-4 w-4 text-orange-600" /> :
-                         <Sparkles className="h-4 w-4 text-purple-600" />}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{reward.name}</h3>
-                        <p className="text-sm text-gray-600">{reward.description}</p>
-                      </div>
+              {rewards.featured.map((reward) => (
+                <div key={reward.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="relative">
+                    <div className="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                      <Package className="h-16 w-16 text-gray-400" />
                     </div>
-                    <div className="text-right">
-                      <p className="text-lg font-bold text-indigo-600">{reward.value}</p>
-                    </div>
+                    {reward.badge && (
+                      <div className="absolute top-3 left-3">
+                        <span className="px-2 py-1 bg-orange-500 text-white text-xs font-medium rounded-full">
+                          {reward.badge}
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">{reward.points} points</span>
+                  <div className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <h3 className="font-semibold text-gray-900">{reward.title}</h3>
+                        <p className="text-sm text-gray-600">{reward.description}</p>
+                        {reward.partner && (
+                          <span className="inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full mt-2">
+                            {reward.partner}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-gray-900">{reward.pointsRequired}</div>
+                        <div className="text-xs text-gray-600">points</div>
+                      </div>
+                    </div>
                     <Button 
-                      size="sm" 
-                      className={`${
-                        customer.loyaltyPoints >= reward.points
-                          ? 'bg-indigo-600 hover:bg-indigo-700'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      }`}
-                      disabled={customer.loyaltyPoints < reward.points}
+                      className="w-full mt-3"
+                      disabled={customerRewards.totalPoints < reward.pointsRequired}
                     >
-                      {customer.loyaltyPoints >= reward.points ? 'Redeem' : 'Not enough points'}
+                      {customerRewards.totalPoints >= reward.pointsRequired ? 'Redeem Now' : 'Not Enough Points'}
                     </Button>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
 
-        {/* Achievements Sidebar */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-              <div className="p-2 bg-yellow-100 rounded-lg">
-                <Award className="h-5 w-5 text-yellow-600" />
+          {/* 商品奖励 - 优化布局 */}
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Merchandise</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {rewards.merchandise.map((reward) => (
+                <div key={reward.id} className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
+                  <div className="w-full h-32 bg-gray-100 rounded-lg flex items-center justify-center mb-3">
+                    <Package className="h-8 w-8 text-gray-400" />
+                  </div>
+                  <h3 className="font-medium text-gray-900 mb-1">{reward.title}</h3>
+                  <p className="text-sm text-gray-600 mb-2">{reward.description}</p>
+                  <div className="mb-3">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-gray-500">Stock</span>
+                      <span className="text-sm font-medium text-gray-700">{reward.stock} available</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-500">Points Required</span>
+                      <span className="text-lg font-bold text-gray-900">{reward.pointsRequired}</span>
+                    </div>
+                  </div>
+                  <Button 
+                    size="sm" 
+                    className="w-full"
+                    disabled={customerRewards.totalPoints < reward.pointsRequired}
+                  >
+                    Redeem
+                  </Button>
+        </div>
+              ))}
               </div>
-              Achievements
-            </h2>
-            <p className="text-sm text-gray-500 mt-2">
-              Your Shokz journey milestones
-            </p>
           </div>
-          <div className="p-6">
+
+          {/* 体验奖励 */}
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Experiences</h2>
             <div className="space-y-4">
-              {customer.achievements.map((achievement) => (
-                <div key={achievement.id} className={`p-4 rounded-xl border-2 transition-all ${
-                  achievement.earned 
-                    ? 'border-yellow-200 bg-yellow-50' 
-                    : 'border-gray-200 bg-gray-50'
-                }`}>
-                  <div className="flex items-center gap-3">
-                    <div className="text-2xl">{achievement.icon}</div>
+              {rewards.experiences.map((reward) => (
+                <div key={reward.id} className="bg-white border border-gray-200 rounded-xl p-4">
+                  <div className="flex items-start gap-4">
+                    <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <Trophy className="h-8 w-8 text-gray-400" />
+                    </div>
                     <div className="flex-1">
-                      <p className={`font-medium ${
-                        achievement.earned ? 'text-gray-900' : 'text-gray-500'
-                      }`}>
-                        {achievement.name}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {achievement.description}
-                      </p>
-                      {achievement.earned && (
-                        <div className="flex items-center gap-1 mt-2">
-                          <CheckCircle className="h-3 w-3 text-green-600" />
-                          <span className="text-xs text-green-600 font-medium">+{achievement.points} pts</span>
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h3 className="font-semibold text-gray-900">{reward.title}</h3>
+                          <p className="text-sm text-gray-600">{reward.description}</p>
+                          {reward.partner && (
+                            <span className="inline-block px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full mt-2">
+                              {reward.partner}
+                            </span>
+                          )}
                         </div>
-                      )}
+                        <div className="text-right">
+                          <div className="text-lg font-bold text-gray-900">{reward.pointsRequired}</div>
+                          <div className="text-xs text-gray-600">points</div>
+                        </div>
+                      </div>
+                      <Button 
+                        size="sm"
+                        disabled={customerRewards.totalPoints < reward.pointsRequired}
+                      >
+                        {customerRewards.totalPoints >= reward.pointsRequired ? 'Redeem' : 'Not Enough Points'}
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -264,75 +495,70 @@ export default async function RewardsPage() {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Recent Activity & Tier Benefits */}
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Recent Activity */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <TrendingUp className="h-5 w-5 text-green-600" />
-              </div>
-              Recent Activity
-            </h2>
-            <p className="text-sm text-gray-500 mt-2">
-              Your latest points and rewards activity
-            </p>
+        {/* 右列 - Shokz Star社区 */}
+        <div className="lg:col-span-1 space-y-6">
+          
+          {/* Shokz Star社区 */}
+          <div className="bg-white border border-gray-200 rounded-xl p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Star className="h-5 w-5 text-orange-500" />
+              <h3 className="font-semibold text-gray-900">Shokz Star Community</h3>
           </div>
-          <div className="p-6">
             <div className="space-y-4">
-              {customer.recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-green-100 rounded-full">
-                      <Star className="h-4 w-4 text-green-600" />
+              {shokzStarContent.map((content) => (
+                <div key={content.id} className="border border-gray-100 rounded-lg p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center">
+                      <Star className="h-3 w-3 text-orange-600" />
                     </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{activity.name}</p>
-                      <p className="text-sm text-gray-500">{activity.description}</p>
-                      <p className="text-xs text-gray-400">
-                        {new Date(activity.date).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric'
-                        })}
-                      </p>
-                    </div>
+                    <span className="font-medium text-gray-900 text-sm">{content.user}</span>
+                    <span className="px-1.5 py-0.5 bg-orange-100 text-orange-800 text-xs rounded-full">
+                      Star
+                    </span>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-green-600">+{activity.points} pts</p>
+                  <p className="text-sm text-gray-600 mb-2">{content.content}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-red-500">
+                        <Heart className="h-3 w-3" />
+                        {content.likes}
+                      </button>
+                      <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-blue-500">
+                        <MessageSquare className="h-3 w-3" />
+                        {content.comments}
+                      </button>
+                    </div>
+                    <span className="text-xs text-green-600 font-medium">+{content.points} pts</span>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+            <Button variant="outline" size="sm" className="w-full mt-4">
+              <Plus className="h-4 w-4 mr-2" />
+              Share Your Story
+            </Button>
         </div>
 
-        {/* Tier Benefits */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <Trophy className="h-5 w-5 text-purple-600" />
+          {/* 等级进度 */}
+          <div className="bg-white border border-gray-200 rounded-xl p-6">
+            <h3 className="font-semibold text-gray-900 mb-4">Level Progress</h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Current Level</span>
+                <span className="font-semibold text-gray-900">{customerRewards.tier}</span>
               </div>
-              {customer.loyaltyTier} Benefits
-            </h2>
-            <p className="text-sm text-gray-500 mt-2">
-              Exclusive perks for {customer.loyaltyTier} members
-            </p>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Next Level</span>
+                <span className="font-semibold text-gray-900">{customerRewards.nextTier}</span>
           </div>
-          <div className="p-6">
-            <div className="space-y-4">
-              {customer.tierBenefits.map((benefit, index) => (
-                <div key={index} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
-                  <div className="text-2xl">{benefit.icon}</div>
-                  <div>
-                    <h3 className="font-medium text-gray-900">{benefit.name}</h3>
-                    <p className="text-sm text-gray-500">{benefit.description}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Points to Next</span>
+                <span className="font-semibold text-gray-900">{customerRewards.nextTierPoints}</span>
                   </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-gradient-to-r from-orange-400 to-orange-600 h-2 rounded-full" style={{width: '80%'}}></div>
                 </div>
-              ))}
             </div>
           </div>
         </div>
