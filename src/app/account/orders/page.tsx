@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Package, Calendar, DollarSign, Truck, Eye, RotateCcw, ChevronRight, XCircle, CreditCard, MessageCircle, MapPin, Clock, Search, Filter, SortAsc } from 'lucide-react'
+import { Package, Calendar, DollarSign, Truck, Eye, RotateCcw, ChevronRight, XCircle, CreditCard, MessageCircle, MapPin, Clock, Search, Filter, SortAsc, Tag } from 'lucide-react'
 
 export default async function OrdersPage() {
   // 临时跳过登录验证，用于测试
@@ -21,10 +21,86 @@ export default async function OrdersPage() {
   const orders = [
     {
       node: {
+        id: '0',
+        orderNumber: 1000,
+        processedAt: '2024-01-10T09:15:00Z',
+        totalPrice: { amount: '199.00', currencyCode: 'USD' },
+        fulfillmentStatus: 'fulfilled',
+        trackingNumber: '1Z999CC1111111111',
+        estimatedDelivery: '2024-01-13T00:00:00Z',
+        lineItems: {
+          edges: [
+            {
+              node: {
+                id: '0',
+                title: 'Shokz OpenRun',
+                quantity: 1,
+                variant: {
+                  title: 'Black',
+                  price: { amount: '199.00', currencyCode: 'USD' },
+                  image: { url: '/placeholder-product.jpg', altText: 'Shokz OpenRun' }
+                }
+              }
+            }
+          ]
+        },
+        shippingAddress: {
+          firstName: 'Sophia',
+          lastName: 'Zhao',
+          address1: '123 Main St',
+          city: 'San Francisco',
+          province: 'CA',
+          zip: '94102',
+          country: 'United States',
+          phone: '+1 (555) 123-4567'
+        }
+      }
+    },
+    {
+      node: {
         id: '1',
         orderNumber: 1001,
         processedAt: '2024-01-15T10:30:00Z',
         totalPrice: { amount: '299.00', currencyCode: 'USD' },
+        originalPrice: { amount: '398.00', currencyCode: 'USD' },
+        priceMatch: {
+          isEligible: true,
+          applied: true,
+          savings: { amount: '99.00', currencyCode: 'USD' },
+          competitorPrice: { amount: '249.00', currencyCode: 'USD' },
+          competitorName: 'Amazon',
+          validUntil: '2024-02-15T23:59:59Z',
+          status: 'approved'
+        },
+        returnStatus: 'partial_return',
+        aftershipReturn: {
+          returnId: 'ASR-2024-001',
+          status: 'partial_processed',
+          items: [
+            {
+              lineItemId: '1',
+              title: 'Shokz OpenRun Pro',
+              quantity: 1,
+              returnQuantity: 0,
+              status: 'kept',
+              reason: null
+            },
+            {
+              lineItemId: '2',
+              title: 'Shokz OpenSwim',
+              quantity: 1,
+              returnQuantity: 1,
+              status: 'returned',
+              reason: 'Defective product',
+              returnAmount: { amount: '199.00', currencyCode: 'USD' },
+              processedAt: '2024-01-20T14:30:00Z'
+            }
+          ],
+          totalReturnAmount: { amount: '199.00', currencyCode: 'USD' },
+          refundMethod: 'Original payment method',
+          trackingNumber: 'ASR123456789',
+          createdAt: '2024-01-18T10:15:00Z'
+        },
         fulfillmentStatus: 'fulfilled',
         trackingNumber: '1Z999AA1234567890',
         estimatedDelivery: '2024-01-18T00:00:00Z',
@@ -251,7 +327,7 @@ export default async function OrdersPage() {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-medium text-gray-900 mb-2">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">
           Order History
         </h1>
         <p className="text-gray-600">
@@ -370,17 +446,99 @@ export default async function OrdersPage() {
                   </div>
                 </div>
 
+                {/* AfterShip Partial Return Information */}
+                {order.returnStatus === 'partial_return' && order.aftershipReturn && (
+                  <div className="mb-3 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center">
+                          <span className="text-orange-600 font-bold text-sm">AS</span>
+                        </div>
+                        <span className="text-sm font-medium text-orange-900">Partial Return Processed</span>
+                      </div>
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                        AfterShip Return
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-3 text-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="text-orange-700">Return ID:</span>
+                        <span className="font-medium text-orange-900">{order.aftershipReturn.returnId}</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <span className="text-orange-700">Total Refund:</span>
+                        <span className="font-semibold text-orange-900">${order.aftershipReturn.totalReturnAmount.amount}</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <span className="text-orange-700">Refunded to:</span>
+                        <span className="font-medium text-orange-900">{order.aftershipReturn.refundMethod}</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <span className="text-orange-700">Processed:</span>
+                        <span className="font-medium text-orange-900">
+                          {new Date(order.aftershipReturn.items.find(item => item.status === 'returned')?.processedAt || order.aftershipReturn.createdAt).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Item Details */}
+                    <div className="mt-4 pt-3 border-t border-orange-200">
+                      <h4 className="text-sm font-medium text-orange-900 mb-2">Return Details:</h4>
+                      <div className="space-y-2">
+                        {order.aftershipReturn.items.map((item, index) => (
+                          <div key={index} className="flex items-center justify-between p-2 bg-white rounded border border-orange-100">
+                            <div className="flex items-center gap-2">
+                              <div className={`w-2 h-2 rounded-full ${
+                                item.status === 'kept' ? 'bg-green-500' : 'bg-orange-500'
+                              }`}></div>
+                              <span className="text-sm text-orange-900">{item.title}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {item.status === 'kept' ? (
+                                <span className="text-xs text-green-600 font-medium">Kept</span>
+                              ) : (
+                                <div className="text-right">
+                                  <span className="text-xs text-orange-600 font-medium">Returned</span>
+                                  <div className="text-xs text-orange-500">${item.returnAmount?.amount}</div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* AfterShip Integration Notice */}
+                    <div className="mt-3 pt-3 border-t border-orange-200">
+                      <div className="flex items-center gap-2 text-xs text-orange-600">
+                        <span className="w-1.5 h-1.5 bg-orange-500 rounded-full"></span>
+                        <span>Return processed via AfterShip Return. Track your return with ID: {order.aftershipReturn.trackingNumber}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Tracking Information - Integrated */}
                 {order.fulfillmentStatus === 'shipped' && order.trackingNumber && (
                   <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                    <div className="flex items-center justify-between">
+                    <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <Truck className="h-4 w-4 text-blue-600" />
-                        <span className="text-sm font-medium text-blue-900">Tracking: {order.trackingNumber}</span>
+                        <span className="text-sm font-medium text-blue-900">Tracking:</span>
+                        <span className="text-sm font-semibold text-blue-900">{order.trackingNumber}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-blue-700">
                         <Clock className="h-3 w-3" />
-                        <span>Est. delivery: {new Date(order.estimatedDelivery).toLocaleDateString()}</span>
+                        <span>Est. delivery:</span>
+                        <span className="font-medium">{new Date(order.estimatedDelivery).toLocaleDateString()}</span>
                       </div>
                     </div>
                   </div>
@@ -403,24 +561,37 @@ export default async function OrdersPage() {
                       </span>
                     </div>
                     
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center justify-between">
+                    <div className="space-y-3 text-sm">
+                      <div className="flex items-center gap-2">
                         <span className="text-red-700">Refund Amount:</span>
-                        <span className="font-medium text-red-900">${order.refundAmount.amount}</span>
+                        <span className="font-semibold text-red-900">${order.refundAmount.amount}</span>
                       </div>
                       
                       {order.refundStatus === 'processed' ? (
-                        <div className="flex items-center justify-between">
-                          <span className="text-red-700">Refunded to:</span>
-                          <span className="text-red-900">{order.refundMethod || 'Original payment method'}</span>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-red-700">Refunded to:</span>
+                            <span className="text-red-900">{order.refundMethod || 'Original payment method'}</span>
+                          </div>
+                          {order.refundProcessedAt && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-red-700">Processed:</span>
+                              <span className="text-red-900">
+                                {new Date(order.refundProcessedAt).toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric'
+                                })}
+                              </span>
+                            </div>
+                          )}
                         </div>
                       ) : (
-                        <div className="space-y-1">
-                          <div className="flex items-center justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
                             <span className="text-red-700">Refund to:</span>
                             <span className="text-red-900">{order.refundMethod || 'Original payment method'}</span>
                           </div>
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
                             <span className="text-red-700">Estimated refund:</span>
                             <span className="text-red-900">
                               {order.estimatedRefundDate ? 
@@ -431,18 +602,6 @@ export default async function OrdersPage() {
                               }
                             </span>
                           </div>
-                        </div>
-                      )}
-                      
-                      {order.refundStatus === 'processed' && order.refundProcessedAt && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-red-700">Processed:</span>
-                          <span className="text-red-900">
-                            {new Date(order.refundProcessedAt).toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric'
-                            })}
-                          </span>
                         </div>
                       )}
                     </div>
@@ -478,6 +637,13 @@ export default async function OrdersPage() {
                       <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                         <RotateCcw className="h-4 w-4" />
                         Return Item
+                      </button>
+                    )}
+                    
+                    {order.priceMatch?.isEligible && (
+                      <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        <Tag className="h-4 w-4" />
+                        {order.priceMatch?.applied ? 'Price Matched' : 'Price Match'}
                       </button>
                     )}
                   </div>

@@ -151,7 +151,7 @@ export default async function ProfilePage() {
     <div className="max-w-6xl mx-auto">
       {/* 页面标题 - Shopify风格 */}
       <div className="mb-8">
-        <h1 className="text-2xl font-medium text-gray-900 mb-2">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">
           Account Settings
         </h1>
         <p className="text-gray-600">
@@ -169,7 +169,7 @@ export default async function ProfilePage() {
           <div className="bg-white border border-gray-200 rounded-lg">
             <div className="px-6 py-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
-                <h2 className="text-lg font-medium text-gray-900">Personal Information</h2>
+                <h2 className="text-lg font-bold text-gray-900">Personal Information</h2>
                 <Button variant="outline" size="sm" className="text-sm">
                   <Edit className="h-4 w-4 mr-2" />
                   Edit
@@ -224,7 +224,7 @@ export default async function ProfilePage() {
           <div className="bg-white border border-gray-200 rounded-lg">
             <div className="px-6 py-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-medium text-gray-900">Addresses</h2>
+                <h2 className="text-lg font-bold text-gray-900">Addresses</h2>
                 <Button variant="outline" size="sm" className="text-sm">
                   <Plus className="h-4 w-4 mr-2" />
                   Add Address
@@ -242,7 +242,14 @@ export default async function ProfilePage() {
                           <Home className="h-4 w-4 text-gray-600" />
                           <span className="text-sm font-medium text-gray-900">Default Address</span>
                         </div>
-                        <Badge variant="secondary" className="text-xs">Default</Badge>
+                        <div className="flex gap-1">
+                          {defaultAddress.isDefaultBilling && (
+                            <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">Billing</Badge>
+                          )}
+                          {defaultAddress.isDefaultShipping && (
+                            <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">Shipping</Badge>
+                          )}
+                        </div>
                       </div>
                       
                       <div className="text-sm text-gray-600 space-y-1">
@@ -271,7 +278,7 @@ export default async function ProfilePage() {
                   {/* 其他地址 */}
                   {addresses.filter(addr => !addr.isDefaultBilling && !addr.isDefaultShipping).length > 0 && (
                     <div>
-                      <h3 className="text-sm font-medium text-gray-900 mb-3">Other Addresses</h3>
+                      <h3 className="text-sm font-semibold text-gray-900 mb-3">Other Addresses</h3>
                       <div className="space-y-3">
                         {addresses.filter(addr => !addr.isDefaultBilling && !addr.isDefaultShipping).map((address) => (
                           <div key={address.id} className="border border-gray-200 rounded-lg p-4">
@@ -294,6 +301,19 @@ export default async function ProfilePage() {
                                   <Copy className="h-3 w-3" />
                                 </Button>
                               </div>
+                            </div>
+                            
+                            {/* 地址类型标识 */}
+                            <div className="flex gap-1 mb-2">
+                              {address.isDefaultBilling && (
+                                <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">Billing</Badge>
+                              )}
+                              {address.isDefaultShipping && (
+                                <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">Shipping</Badge>
+                              )}
+                              {!address.isDefaultBilling && !address.isDefaultShipping && (
+                                <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600">Additional</Badge>
+                              )}
                             </div>
                             
                             <div className="text-sm text-gray-600 space-y-1">
@@ -333,7 +353,7 @@ export default async function ProfilePage() {
             <div className="px-6 py-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-medium text-gray-900">Payment Methods</h2>
+                  <h2 className="text-lg font-bold text-gray-900">Payment Methods</h2>
                   <p className="text-sm text-gray-600 mt-1">Secure payment options for faster checkout</p>
                 </div>
                 <Button variant="outline" size="sm" className="text-sm">
@@ -441,7 +461,7 @@ export default async function ProfilePage() {
                   
                   {/* 支付方式说明 */}
                   <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                    <h4 className="text-sm font-medium text-gray-900 mb-3">Available Payment Methods</h4>
+                    <h4 className="text-sm font-semibold text-gray-900 mb-3">Available Payment Methods</h4>
                     <div className="space-y-2 text-xs text-gray-600">
                       <div className="flex items-center gap-2">
                         <div className="w-4 h-3 bg-gradient-to-r from-green-600 to-green-700 rounded flex items-center justify-center">
@@ -481,7 +501,7 @@ export default async function ProfilePage() {
           {/* 安全设置卡片 - 参考Shopify的安全设计 */}
           <div className="bg-white border border-gray-200 rounded-lg">
             <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-medium text-gray-900">Security</h2>
+              <h2 className="text-lg font-bold text-gray-900">Security</h2>
             </div>
             <div className="px-6 py-6">
               <div className="space-y-4">
@@ -545,7 +565,7 @@ export default async function ProfilePage() {
           {/* 账户偏好卡片 */}
           <div className="bg-white border border-gray-200 rounded-lg">
             <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-medium text-gray-900">Preferences</h2>
+              <h2 className="text-lg font-bold text-gray-900">Preferences</h2>
               </div>
             <div className="px-6 py-6">
               <div className="space-y-4">
@@ -599,15 +619,16 @@ export default async function ProfilePage() {
                 </div>
               ))}
           </div>
-        </div>
-
+            </div>
+            
                 <Button className="w-full text-sm">
-                  Save Preferences
+              Save Preferences
                 </Button>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   )

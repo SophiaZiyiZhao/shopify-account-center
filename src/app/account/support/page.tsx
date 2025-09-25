@@ -78,10 +78,7 @@ export default async function SupportPage() {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">S</span>
-          </div>
+        <div className="mb-4">
           <h1 className="text-2xl font-bold text-gray-900">
             Support Center
           </h1>

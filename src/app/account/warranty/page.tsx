@@ -32,6 +32,9 @@ export default async function WarrantyPage() {
       warrantyStatus: 'active',
       warrantyType: '2-Year Limited Warranty',
       orderNumber: '1001',
+      purchaseChannel: 'shokz.com',
+      purchaseChannelName: 'Shokz Official Store',
+      productType: 'new',
       image: '/placeholder-product.jpg',
       issues: []
     },
@@ -46,20 +49,26 @@ export default async function WarrantyPage() {
       warrantyStatus: 'expiring_soon',
       warrantyType: '2-Year Limited Warranty',
       orderNumber: '1002',
+      purchaseChannel: 'amazon',
+      purchaseChannelName: 'Amazon',
+      productType: 'new',
       image: '/placeholder-product.jpg',
       issues: []
     },
     {
       id: '3',
-      name: 'Shokz OpenComm',
+      name: 'Shokz OpenComm (Refurbished)',
       model: 'OpenComm',
       serialNumber: 'SR2023001',
       purchaseDate: '2023-06-15T00:00:00Z',
       registrationDate: '2023-06-16T00:00:00Z',
-      warrantyExpiry: '2025-06-15T00:00:00Z',
+      warrantyExpiry: '2024-06-15T00:00:00Z',
       warrantyStatus: 'active',
-      warrantyType: '2-Year Limited Warranty',
+      warrantyType: '1-Year Limited Warranty',
       orderNumber: '1003',
+      purchaseChannel: 'shokz.com',
+      purchaseChannelName: 'Shokz Official Store',
+      productType: 'refurbished',
       image: '/placeholder-product.jpg',
       issues: [
         {
@@ -78,7 +87,23 @@ export default async function WarrantyPage() {
   const warrantyPolicies = [
     {
       type: '2-Year Limited Warranty',
-      description: 'Covers manufacturing defects and material failures',
+      description: 'Covers manufacturing defects and material failures for new products',
+      coverage: [
+        'Audio quality issues',
+        'Battery performance problems',
+        'Physical defects',
+        'Water resistance failures'
+      ],
+      exclusions: [
+        'Normal wear and tear',
+        'Accidental damage',
+        'Unauthorized modifications',
+        'Loss or theft'
+      ]
+    },
+    {
+      type: '1-Year Limited Warranty',
+      description: 'Covers manufacturing defects and material failures for refurbished products',
       coverage: [
         'Audio quality issues',
         'Battery performance problems',
@@ -97,7 +122,7 @@ export default async function WarrantyPage() {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-medium text-gray-900 mb-2">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">
           Product Registration & Warranty
         </h1>
         <p className="text-gray-600">
@@ -222,26 +247,16 @@ export default async function WarrantyPage() {
               </div>
             </div>
             
-            {/* 购买渠道说明 */}
+            {/* 保修政策说明 */}
             <div className="bg-gray-50 rounded-lg p-4">
-              <h4 className="font-medium text-gray-900 mb-2">Supported Purchase Channels</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+              <div className="p-3 bg-blue-50 rounded-lg">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span>Shokz.com Official</span>
+                  <CheckCircle className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm text-blue-800 font-medium">Universal Warranty Coverage</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span>Amazon</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span>Authorized Retailers</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span>Third-party Platforms</span>
-                </div>
+                <p className="text-xs text-blue-700 mt-1">
+                  All Shokz products are covered by warranty regardless of purchase channel
+                </p>
               </div>
             </div>
           </div>
@@ -264,6 +279,35 @@ export default async function WarrantyPage() {
                           <h3 className="text-lg font-medium text-gray-900">{product.name}</h3>
                           <p className="text-sm text-gray-600">Serial: {product.serialNumber}</p>
                           <p className="text-sm text-gray-600">Order: #{product.orderNumber}</p>
+                          {/* 购买渠道和产品类型标识 */}
+                          <div className="flex items-center gap-2 mt-2">
+                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                              product.purchaseChannel === 'shokz.com' 
+                                ? 'bg-black text-white'
+                                : product.purchaseChannel === 'amazon'
+                                ? 'bg-orange-100 text-orange-800'
+                                : product.purchaseChannel === 'bestbuy'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}>
+                              {product.purchaseChannel === 'shokz.com' && (
+                                <span className="w-2 h-2 bg-white rounded-full mr-1.5"></span>
+                              )}
+                              {product.purchaseChannel === 'amazon' && (
+                                <span className="w-2 h-2 bg-orange-500 rounded-full mr-1.5"></span>
+                              )}
+                              {product.purchaseChannel === 'bestbuy' && (
+                                <span className="w-2 h-2 bg-blue-500 rounded-full mr-1.5"></span>
+                              )}
+                              {product.purchaseChannelName}
+                            </span>
+                            {product.productType === 'refurbished' && (
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                <span className="w-2 h-2 bg-purple-500 rounded-full mr-1.5"></span>
+                                Refurbished
+                              </span>
+                            )}
+                          </div>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -360,38 +404,48 @@ export default async function WarrantyPage() {
             </div>
             <div className="px-6 py-4">
               <div className="space-y-4">
-                {warrantyPolicies.map((policy, index) => (
-                  <div key={index}>
-                    <h3 className="font-medium text-gray-900 mb-2">{policy.type}</h3>
-                    <p className="text-sm text-gray-600 mb-3">{policy.description}</p>
-                    
-                    <div className="space-y-3">
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-900 mb-1">Coverage Includes:</h4>
-                        <ul className="text-sm text-gray-600 space-y-1">
-                          {policy.coverage.map((item, idx) => (
-                            <li key={idx} className="flex items-center gap-2">
-                              <CheckCircle className="h-3 w-3 text-green-500" />
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-900 mb-1">Not Covered:</h4>
-                        <ul className="text-sm text-gray-600 space-y-1">
-                          {policy.exclusions.map((item, idx) => (
-                            <li key={idx} className="flex items-center gap-2">
-                              <AlertTriangle className="h-3 w-3 text-red-500" />
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                {/* 新品保修 */}
+                <div className="p-3 bg-green-50 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <h3 className="font-medium text-green-800">New Products</h3>
+                  </div>
+                  <p className="text-sm text-green-700 font-medium mb-2">2-Year Limited Warranty</p>
+                  <p className="text-xs text-green-600">Covers manufacturing defects and material failures</p>
+                </div>
+                
+                {/* 翻新机保修 */}
+                <div className="p-3 bg-purple-50 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                    <h3 className="font-medium text-purple-800">Refurbished Products</h3>
+                  </div>
+                  <p className="text-sm text-purple-700 font-medium mb-2">1-Year Limited Warranty</p>
+                  <p className="text-xs text-purple-600">Covers manufacturing defects and material failures</p>
+                </div>
+                
+                {/* 覆盖范围 */}
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium text-gray-900">Coverage Includes:</h4>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="h-3 w-3 text-green-500" />
+                      <span className="text-gray-600">Audio issues</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="h-3 w-3 text-green-500" />
+                      <span className="text-gray-600">Battery problems</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="h-3 w-3 text-green-500" />
+                      <span className="text-gray-600">Physical defects</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <CheckCircle className="h-3 w-3 text-green-500" />
+                      <span className="text-gray-600">Water resistance</span>
                     </div>
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           </div>
